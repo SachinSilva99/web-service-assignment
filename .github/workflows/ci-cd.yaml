@@ -30,28 +30,31 @@ jobs:
       - name: Build with Maven
         run: mvn clean install
 
-      - name: Push Docker image
+      - name: Login to Docker Hub
         run: |
           echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
 
-      - name: Build Docker image
-        run: docker build -t aws-assignment/aws-assignment:$GITHUB_SHA .
-            docker build -t sachintharuka/aws-assignment:latest ./aws-assignment
-            docker push sachintharuka/aws-assignment:latest
-
+      - name: Build and Push Docker image
+        run: |
+          docker build -t sachintharuka/aws-assignment:$GITHUB_SHA -t sachintharuka/aws-assignment:latest .
+          docker push sachintharuka/aws-assignment:$GITHUB_SHA
+          docker push sachintharuka/aws-assignment:latest
 
   deploy:
     needs: build
     runs-on: ubuntu-latest
+
     steps:
       - name: Deploy to Kubernetes (Development)
         if: github.ref == 'refs/heads/dev'
         run: |
           kubectl apply -f k8s/aws-assignment-dev.yaml
+
       - name: Deploy to Kubernetes (Test)
         if: github.ref == 'refs/heads/test'
         run: |
           kubectl apply -f k8s/aws-assignment-test.yaml
+
       - name: Deploy to Kubernetes (Production)
         if: github.ref == 'refs/heads/main'
         run: |
