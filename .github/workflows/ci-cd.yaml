@@ -1,17 +1,3 @@
-name: CI/CD Pipeline
-
-on:
-  push:
-    branches:
-      - main
-      - dev
-      - test
-  pull_request:
-    branches:
-      - main
-      - dev
-      - test
-
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -24,8 +10,8 @@ jobs:
         uses: actions/setup-java@v3
         with:
           java-version: '17'
-          distribution: 'temurin'  # Specify the distribution (e.g., temurin, zulu)
-          cache: 'maven'  # Optional: To cache Maven dependencies
+          distribution: 'temurin'
+          cache: 'maven'
 
       - name: Build with Maven
         run: mvn clean install
@@ -45,10 +31,12 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: List files for debugging
-        run: cd ..
-      - name: List files for debugging
+      - name: Checkout code for deployment
+        uses: actions/checkout@v3
+
+      - name: List files in current directory
         run: ls -la
+
       - name: Deploy to Kubernetes (Development)
         run: |
-          kubectl apply -f /deployment.yaml
+          kubectl apply -f ./deployment.yaml
