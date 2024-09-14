@@ -20,7 +20,7 @@ public class LoginController {
         if ("user".equals(username) && "password".equals(password)) {
             return "redirect:/home";
         } else {
-            model.addAttribute("error", "Invalid username or passwords");
+            model.addAttribute("error", "Invalid username or passwordss");
             return "login";
         }
     }
