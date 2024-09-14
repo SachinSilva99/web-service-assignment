@@ -5,7 +5,7 @@ FROM openjdk:17
 WORKDIR /app
 
 # Copy the JAR file into the container
-COPY aws-assignment-0.0.1.jar /app/aws-assignment-0.0.1.jar
+COPY target/aws-assignment-0.0.1.jar /aws-assignment/aws-assignment-0.0.1.jar
 
 # Expose the port the app runs on
 EXPOSE 8080
