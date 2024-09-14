@@ -1,0 +1,54 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main
+      - dev
+      - test
+  pull_request:
+    branches:
+      - main
+      - dev
+      - test
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v1
+        with:
+          java-version: '17'
+
+      - name: Build with Maven
+        run: mvn clean install
+
+      - name: Build Docker image
+        run: docker build -t aws-assignment/aws-assignment:$GITHUB_SHA .
+
+      - name: Push Docker image
+        run: |
+          echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+          docker push your-docker-repo/aws-assignment:$GITHUB_SHA
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy to Kubernetes (Development)
+        if: github.ref == 'refs/heads/dev'
+        run: |
+          kubectl apply -f k8s/aws-assignment-dev.yaml
+      - name: Deploy to Kubernetes (Test)
+        if: github.ref == 'refs/heads/test'
+        run: |
+          kubectl apply -f k8s/aws-assignment-test.yaml
+      - name: Deploy to Kubernetes (Production)
+        if: github.ref == 'refs/heads/main'
+        run: |
+          kubectl apply -f k8s/aws-assignment-prod.yaml
