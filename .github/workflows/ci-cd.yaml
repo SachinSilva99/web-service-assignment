@@ -45,6 +45,8 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - - name: List files for debugging
+          run: ls -la
       - name: Deploy to Kubernetes (Development)
         run: |
           kubectl apply -f /deployment.yaml
