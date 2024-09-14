@@ -47,4 +47,4 @@ jobs:
     steps:
       - name: Deploy to Kubernetes (Development)
         run: |
-          kubectl apply -f ./aws-assignment/deployment.yaml
+          kubectl apply -f aws-assignment/deployment.yaml
