@@ -46,16 +46,5 @@ jobs:
 
     steps:
       - name: Deploy to Kubernetes (Development)
-        if: github.ref == 'refs/heads/dev'
         run: |
-          kubectl apply -f k8s/aws-assignment-dev.yaml
-
-      - name: Deploy to Kubernetes (Test)
-        if: github.ref == 'refs/heads/test'
-        run: |
-          kubectl apply -f k8s/aws-assignment-test.yaml
-
-      - name: Deploy to Kubernetes (Production)
-        if: github.ref == 'refs/heads/main'
-        run: |
-          kubectl apply -f k8s/aws-assignment-prod.yaml
+          kubectl apply -f deployment.yaml
