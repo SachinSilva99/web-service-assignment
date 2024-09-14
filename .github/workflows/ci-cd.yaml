@@ -1,3 +1,17 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main
+      - dev
+      - test
+  pull_request:
+    branches:
+      - main
+      - dev
+      - test
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -38,4 +52,5 @@ jobs:
         run: ls -la
 
       - name: Deploy to Kubernetes (Development)
-        run: kubectl apply -f ./deployment.yaml
+        run: |
+          kubectl apply -f ./deployment.yaml
